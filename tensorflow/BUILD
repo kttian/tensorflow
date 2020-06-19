@@ -2,6 +2,79 @@
 # TensorFlow is a computational framework, primarily for use in machine
 # learning applications.
 
+### toy custom op
+load("//tensorflow:tensorflow.bzl", "tf_custom_op_library")
+
+tf_custom_op_library(
+    name = "zero_out.so",
+    srcs = ["zero_out.cc"],
+)
+
+package(default_visibility = ["//visibility:public"])
+
+config_setting(
+    name = "windows",
+    constraint_values = ["@bazel_tools//platforms:windows"],
+)
+
+cc_binary(
+    name = 'python/ops/_zero_out_ops.so',
+    srcs = [
+        "cc/kernels/zero_out_kernels.cc",
+        "cc/ops/zero_out_ops.cc",
+    ],
+    linkshared = 1,
+    deps = [
+        "@local_config_tf//:libtensorflow_framework",
+        "@local_config_tf//:tf_header_lib",
+    ],
+    features = select({
+        ":windows": ["windows_export_all_symbols"],
+        "//conditions:default": [],
+    }),
+    copts = select({
+        ":windows": ["/DEIGEN_STRONG_INLINE=inline", "-DTENSORFLOW_MONOLITHIC_BUILD", "/DPLATFORM_WINDOWS", "/DEIGEN_HAS_C99_MATH", "/DTENSORFLOW_USE_EIGEN_THREADPOOL", "/DEIGEN_AVOID_STL_ARRAY", "/Iexternal/gemmlowp", "/wd4018", "/wd4577", "/DNOGDI", "/UTF_COMPILE_LIBRARY"],
+        "//conditions:default": ["-pthread", "-std=c++11", "-D_GLIBCXX_USE_CXX11_ABI=0"],
+    }),
+)
+
+py_library(
+    name = "zero_out_ops_py",
+    srcs = ([
+        "python/ops/zero_out_ops.py",
+    ]),
+    data = [
+        ":python/ops/_zero_out_ops.so"
+    ],
+    srcs_version = "PY2AND3",
+)
+
+py_test(
+    name = "zero_out_ops_py_test",
+    srcs = [
+        "python/ops/zero_out_ops_test.py"
+    ],
+    main = "python/ops/zero_out_ops_test.py",
+    deps = [
+        ":zero_out_ops_py",
+    ],
+    srcs_version = "PY2AND3",
+)
+
+py_library(
+    name = "zero_out_py",
+    srcs = ([
+        "__init__.py",
+        "python/__init__.py",
+        "python/ops/__init__.py",
+    ]),
+    deps = [
+        ":zero_out_ops_py"
+    ],
+    srcs_version = "PY2AND3",
+)
+### end of custom op
+
 load("@bazel_skylib//lib:selects.bzl", "selects")
 load("//tensorflow:tensorflow.bzl", "VERSION", "tf_cc_shared_object", "tf_custom_op_library_additional_deps_impl", "tf_native_cc_binary")
 load(
