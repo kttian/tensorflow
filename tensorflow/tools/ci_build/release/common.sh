@@ -53,8 +53,8 @@ function readable_run {
 # LINT.IfChange
 # Redirect bazel output dir b/73748835
 function set_bazel_outdir {
-  mkdir -p /tmpfs/bazel_output
-  export TEST_TMPDIR=/tmpfs/bazel_output
+  mkdir -p ~/tmpfs/bazel_output
+  export TEST_TMPDIR=~/tmpfs/bazel_output
 }
 
 # Downloads bazelisk to ~/bin as `bazel`.
@@ -108,9 +108,9 @@ function install_pip2 {
   sudo python2 get-pip.py
 }
 
-function install_pip3.5 {
+function install_pip35 {
   curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-  sudo python3.5 get-pip.py
+  sudo python3 get-pip.py
 }
 
 function install_pip_deps {

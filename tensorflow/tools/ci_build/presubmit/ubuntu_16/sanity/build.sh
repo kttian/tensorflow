@@ -13,12 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
 set -e
 
 # Error if we somehow forget to set the path to bazel_wrapper.py
 set -u
-BAZEL_WRAPPER_PATH=$1
+BAZEL_WRAPPER_PATH=bazel
 set +u
 
 # From this point on, logs can be publicly available
