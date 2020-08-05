@@ -137,6 +137,16 @@ TEST(TensorMapTest, EncodeDecode) {
   test::ExpectTensorEqual<int32>(tm.find(k)->second, tmc.find(k)->second);
 }
 
+TEST(TensorMapTest, RefCount) {
+  TensorMap tm;
+  TensorKey k = Tensor(11);
+  Tensor v = Tensor(22);
+  tm.insert(k, v);
+  EXPECT_EQ(tm.RefCountIsOne(), true);
+  TensorMap tm2 = tm;
+  EXPECT_EQ(tm.RefCountIsOne(), false);
+}
+
 }  // namespace
 
 }  // namespace tensorflow
