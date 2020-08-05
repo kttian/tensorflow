@@ -2944,6 +2944,7 @@ cc_library(
     hdrs = ["tensor_map.h"],
     deps = [
         "//tensorflow/core:framework",
+        "//tensorflow/core:framework_internal",
         "//tensorflow/core:lib",
         "//tensorflow/core:protos_all_cc",
         "//tensorflow/core/framework:tensor_shape_proto_cc",
@@ -2960,6 +2961,7 @@ tf_kernel_library(
         ":fill_functor",
         ":tensor_map",
         "//tensorflow/core:framework",
+        "//tensorflow/core:framework_internal",
         "//tensorflow/core:lib",
         "//third_party/eigen3",
     ],
