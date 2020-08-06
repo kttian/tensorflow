@@ -37,7 +37,6 @@ class MapOpsTest(test_util.TensorFlowTestCase, parameterized.TestCase):
     s = map_ops.tensor_map_size(m)
     self.assertAllEqual(s, 0)
   
-  '''
   def testTensorMapInsert(self):
     m = map_ops.empty_tensor_map()
     k = constant_op.constant(1.0)
@@ -104,7 +103,6 @@ class MapOpsTest(test_util.TensorFlowTestCase, parameterized.TestCase):
                                 "Trying to erase non-existent item."):
       m, e = map_ops.tensor_map_erase(m, k, dtypes.float32)
       self.evaluate(e)
-  '''
 
   def testTensorMapHasKey(self):
     m = map_ops.empty_tensor_map()
