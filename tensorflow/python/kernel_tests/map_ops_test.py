@@ -25,6 +25,7 @@ from tensorflow.python.framework import errors
 from tensorflow.python.framework import test_util
 from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import control_flow_ops
+from tensorflow.python.ops import cond_v2
 from tensorflow.python.ops import map_ops
 from tensorflow.python.platform import test
 
@@ -117,6 +118,18 @@ class MapOpsTest(test_util.TensorFlowTestCase, parameterized.TestCase):
     self.assertAllEqual(b, True)
     self.assertAllEqual(b2, False)
 
+  def testHasKeyLookup(self):
+    m = map_ops.empty_tensor_map()
+    k = constant_op.constant(1.0)
+    v = constant_op.constant(2.0)
+    h = map_ops.tensor_map_has_key(m, k)
+    self.assertAllEqual(h, False)
+    m = map_ops.tensor_map_insert(m, k, v)
+    h = map_ops.tensor_map_has_key(m, k)
+    self.assertAllEqual(h, True)
+    l = map_ops.tensor_map_lookup(m, k, v.dtype)
+    self.assertAllClose(l, v)
+
   def testIfHasKeyLookup(self):
     m = map_ops.empty_tensor_map()
     k = constant_op.constant(1.0)
@@ -165,7 +178,6 @@ class MapOpsTest(test_util.TensorFlowTestCase, parameterized.TestCase):
     s = map_ops.tensor_map_size(m)
     self.assertAllEqual(s, 0)
 
-  '''
   def testInsertLookupGrad(self):
     with backprop.GradientTape() as tape:
       m = map_ops.empty_tensor_map()
@@ -177,7 +189,7 @@ class MapOpsTest(test_util.TensorFlowTestCase, parameterized.TestCase):
       l *= 5
       g = tape.gradient(l, v)
       self.assertAllEqual(g, 5)
-
+  
   def testMultipleInsertLookupGrad(self):
     with backprop.GradientTape(persistent=True) as tape:
       m = map_ops.empty_tensor_map()
@@ -427,7 +439,6 @@ class MapOpsTest(test_util.TensorFlowTestCase, parameterized.TestCase):
     s = map_ops.tensor_map_size(m)
     self.assertAllEqual(s, 0)
     self.assertAllClose(e, v)
-  '''
 
 if __name__ == '__main__':
   test.main()
