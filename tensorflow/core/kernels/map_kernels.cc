@@ -15,6 +15,10 @@ limitations under the License.
 
 #define EIGEN_USE_THREADS
 
+#if GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+#define EIGEN_USE_GPU
+#endif // GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
 #include "tensorflow/core/kernels/map_kernels.h"
 #include "tensorflow/core/framework/op_kernel.h"
 #include "tensorflow/core/framework/types.h"
@@ -26,20 +30,66 @@ namespace tensorflow {
 REGISTER_KERNEL_BUILDER(Name("EmptyTensorMap").Device(DEVICE_CPU),
                         EmptyTensorMap);
 
+#if GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
+REGISTER_KERNEL_BUILDER(Name("EmptyTensorMap").Device(DEVICE_GPU),
+                        EmptyTensorMap);
+
+#endif  // GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
+
 REGISTER_KERNEL_BUILDER(Name("TensorMapSize").Device(DEVICE_CPU),
                         TensorMapSize);
+
+#if GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
+REGISTER_KERNEL_BUILDER(Name("TensorMapSize").Device(DEVICE_GPU),
+                        TensorMapSize);
+
+#endif  // GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
 
 REGISTER_KERNEL_BUILDER(Name("TensorMapLookup").Device(DEVICE_CPU),
                         TensorMapLookup);
 
+#if GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
+REGISTER_KERNEL_BUILDER(Name("TensorMapLookup").Device(DEVICE_GPU),
+                        TensorMapLookup);
+
+#endif  // GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
+
 REGISTER_KERNEL_BUILDER(Name("TensorMapInsert").Device(DEVICE_CPU),
                         TensorMapInsert);
+
+#if GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
+REGISTER_KERNEL_BUILDER(Name("TensorMapInsert").Device(DEVICE_GPU),
+                        TensorMapInsert);
+
+#endif  // GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
 
 REGISTER_KERNEL_BUILDER(Name("TensorMapErase").Device(DEVICE_CPU),
                         TensorMapErase);
 
+#if GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
+REGISTER_KERNEL_BUILDER(Name("TensorMapErase").Device(DEVICE_GPU),
+                        TensorMapErase);
+
+#endif  // GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
 REGISTER_KERNEL_BUILDER(Name("TensorMapHasKey").Device(DEVICE_CPU),
                         TensorMapHasKey);
+
+#if GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
+REGISTER_KERNEL_BUILDER(Name("TensorMapHasKey").Device(DEVICE_GPU),
+                        TensorMapHasKey);
+
+#endif  // GOOGLE_CUDA || TENSORFLOW_USE_ROCM
 
 #undef REGISTER_TENSOR_LIST_OPS_CPU
 

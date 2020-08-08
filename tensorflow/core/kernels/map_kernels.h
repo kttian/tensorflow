@@ -15,6 +15,11 @@ limitations under the License.
 #ifndef TENSORFLOW_CORE_KERNELS_MAP_KERNELS_H_
 #define TENSORFLOW_CORE_KERNELS_MAP_KERNELS_H_
 
+#define EIGEN_USE_THREADS
+#if GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+#define EIGEN_USE_GPU
+#endif // GOOGLE_CUDA || TENSORFLOW_USE_ROCM
+
 #include "tensorflow/core/framework/op_kernel.h"
 #include "tensorflow/core/kernels/tensor_map.h"
 #include "tensorflow/core/framework/variant_encode_decode.h"
