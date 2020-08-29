@@ -69,13 +69,11 @@ class TensorMap {
   TensorMap() : tensors_(new Tensors) {}
   ~TensorMap();
 
-  TensorMap(const TensorMap& other)
-      : tensors_(other.tensors_) {
+  TensorMap(const TensorMap& other) : tensors_(other.tensors_) {
     tensors_->Ref();
   }
 
-  TensorMap(TensorMap&& rhs)
-      : tensors_(rhs.tensors_) {
+  TensorMap(TensorMap&& rhs) : tensors_(rhs.tensors_) {
     rhs.tensors_ = nullptr;
   }
 
@@ -105,11 +103,11 @@ class TensorMap {
   string DebugString() const { return "TensorMap"; }
 
   // Access to the underlying tensor container.
-  absl::flat_hash_map<TensorKey,Tensor>& tensors() {
+  absl::flat_hash_map<TensorKey, Tensor>& tensors() {
     return tensors_->values_;
   }
 
-  const absl::flat_hash_map<TensorKey,Tensor>& tensors() const {
+  const absl::flat_hash_map<TensorKey, Tensor>& tensors() const {
     return tensors_->values_;
   }
 
@@ -146,7 +144,18 @@ class TensorMap {
   size_t erase(TensorKey key) { return tensors_->values_.erase(key); }
 
   // Size returns the number of elements in the map
-  size_t size() { return tensors_->values_.size(); }
+  size_t size() const { return tensors_->values_.size(); }
+
+  std::vector<Tensor> keys() const {
+    std::vector<Tensor> keys;
+    keys.reserve(tensors_->values_.size());
+    absl::flat_hash_map<TensorKey,Tensor>::iterator it = tensors_->values_.begin();
+    while(it != tensors_->values_.end()) {
+      keys.push_back(it->first);
+      it++;
+    }
+    return keys;
+  }
 
   // Is this TensorMap the only one with a reference to the underlying
   // container?
@@ -162,7 +171,8 @@ class TensorMap {
 
 #if defined(PLATFORM_GOOGLE)
 // TODO(ebrevdo): Identify why Variant inline size is smaller on mobile devices.
-static_assert(Variant::CanInlineType<TensorMap>(),
+// For 32-bit devices, it's acceptable not to inline.
+static_assert(Variant::CanInlineType<TensorMap>() || sizeof(void*) < 8,
               "Must be able to inline TensorMap into a Variant");
 #endif
 }  // namespace tensorflow
